@@ -1,43 +1,46 @@
 #include "LexicalAnalyzer.h"
 
+
 LexicalAnalyzer::LexicalAnalyzer(){}
 
 LexicalAnalyzer::~LexicalAnalyzer(){}
 
 bool LexicalAnalyzer::IsSeparator(char &c)
 {
-  bool found;
-  int  i;
-  found = false;
-  i = 0;
-
-  while(!found && i < NUM_SEPARATORS)
-  {
-    //When an element is found, stops the iteration and returns 'found' back to the driver
-    if(c == separators[i])
-    {
-      found = true;
-    }
-    //Keeps incrementing i to access the next element in an array
-    else
-    {
-      i++;
-    }
-  }//END while(!found && i < NUM_SEPARATORS)
-  return found;
+  return FindChar(c, SEPARATORS, NUM_SEPARATORS);
 }
 
 bool LexicalAnalyzer::IsOperator(char &c)
 {
+  return FindChar(c, OPERATORS, NUM_OPERATORS);
+}
+
+bool LexicalAnalyzer::IsKeyword(string &s)
+{
+  return FindString(s, KEYWORDS, NUM_KEYWORDS);
+}
+
+
+
+
+
+
+
+
+/*******************************************************************************
+ * OTHER HELPER FUNCTIONS
+ ******************************************************************************/
+bool FindChar(char &c, const char CHAR_AR[], const int AR_SIZE)
+{
   bool found;
   int  i;
   found = false;
   i = 0;
 
-  while(!found && i < NUM_OPERATORS)
+  while(!found && i < AR_SIZE)
   {
     //When an element is found, stops the iteration and returns 'found' back to the driver
-    if(c == operators[i])
+    if(c == CHAR_AR[i])
     {
       found = true;
     }
@@ -50,25 +53,25 @@ bool LexicalAnalyzer::IsOperator(char &c)
   return found;
 }
 
-bool LexicalAnalyzer::IsKeyword(string &s)
+bool FindString(string &s, const string STRING_AR[], const int AR_SIZE)
 {
-  bool found;
-  int  i;
-  found = false;
-  i = 0;
+ bool found;
+ int  i;
+ found = false;
+ i = 0;
 
-  while(!found && i < NUM_KEYWORDS)
-  {
-    //When an element is found, stops the iteration and returns 'found' back to the driver
-    if(s == keywords[i])
-    {
-      found = true;
-    }
-    //Keeps incrementing i to access the next element in an array
-    else
-    {
-      i++;
-    }
-  }//END while(!found && i < NUM_SEPARATORS)
-  return found;
+ while(!found && i < AR_SIZE)
+ {
+   //When an element is found, stops the iteration and returns 'found' back to the driver
+   if(s == STRING_AR[i])
+   {
+     found = true;
+   }
+   //Keeps incrementing i to access the next element in an array
+   else
+   {
+     i++;
+   }
+ }//END while(!found && i < NUM_SEPARATORS)
+ return found;
 }
