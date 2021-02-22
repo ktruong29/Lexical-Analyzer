@@ -118,7 +118,7 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
         //Comparing keywords vs. identifiers
         if(IsKeyword(lex))
         {
-          fout << "KEYWORD\t\t\t" << "=\t\t" << lex << endl;
+          fout << "KEYWORD\t\t" << "=\t\t" << lex << endl;
         }
         else
         {
@@ -127,11 +127,11 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
         //Comparing the current character in the buffer (operator or separator?)
         if(IsSeparator(c))
         {
-          fout << "SEPARATOR\t\t" << "=\t\t" << c << endl;
+          fout << "SEPARATOR\t" << "=\t\t" << c << endl;
         }
         else if(IsOperator(c))
         {
-          fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+          fout << "OPERATOR\t" << "=\t\t" << c << endl;
         }
         //Clear the string buffer for the next input
         lex = "";
@@ -150,15 +150,15 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
           break;
 
       case 5:
-        cout << "INTEGER\t\t\t" << "=\t\t" << lex << endl;
+        cout << "INTEGER\t\t" << "=\t\t" << lex << endl;
         //Comparing the current character in the buffer (operators or separators?)
         if(IsSeparator(c) && c != '.')
         {
-          fout << "SEPARATOR\t\t" << "=\t\t" << c << endl;
+          fout << "SEPARATOR\t" << "=\t\t" << c << endl;
         }
         else if(IsOperator(c))
         {
-          fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+          fout << "OPERATOR\t" << "=\t\t" << c << endl;
         }
         lex = "";
         state = 0;
@@ -174,23 +174,23 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
         cout << "REAL\t\t\t" << "=\t\t" << lex << endl;
         if(IsSeparator(c))
         {
-          fout << "SEPARATOR\t\t" << "=\t\t" << c << endl;
+          fout << "SEPARATOR\t" << "=\t\t" << c << endl;
         }
         else if(IsOperator(c))
         {
-          fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+          fout << "OPERATOR\t" << "=\t\t" << c << endl;
         }
         lex = "";
         state = 0;
           break;
 
       case 8:
-        fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+        fout << "OPERATOR\t" << "=\t\t" << c << endl;
         state = 0;
           break;
 
       case 9:
-        fout << "SEPARATOR\t\t" << "=\t\t" << c << endl;
+        fout << "SEPARATOR\t" << "=\t\t" << c << endl;
           break;
 
       case 10:
