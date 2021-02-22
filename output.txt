@@ -1,0 +1,27 @@
+TOKENS				LEXEMES
+
+KEYWORD			=		int
+IDENTIFIER	=		num1
+SEPARATOR		=		,
+IDENTIFIER	=		num2$
+SEPARATOR		=		,
+IDENTIFIER	=		large_num
+SEPARATOR		=		;
+KEYWORD			=		if
+SEPARATOR		=		(
+IDENTIFIER	=		num1
+OPERATOR		=		>
+IDENTIFIER	=		num2$
+SEPARATOR		=		)
+SEPARATOR		=		{
+IDENTIFIER	=		large_num
+OPERATOR		=		=
+IDENTIFIER	=		num1
+SEPARATOR		=		;
+SEPARATOR		=		}
+SEPARATOR		=		{
+IDENTIFIER	=		large_num
+OPERATOR		=		=
+IDENTIFIER	=		num2$
+SEPARATOR		=		;
+SEPARATOR		=		}

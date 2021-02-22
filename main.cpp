@@ -3,39 +3,12 @@
 int main()
 {
   LexicalAnalyzer lexical;
+  ofstream fout;
+  fout.open("output.txt");
 
-  char c;
-  string s;
+  fout << "TOKENS\t\t\t\t" << "LEXEMES\n\n";
+  lexical.LexAnalyzer("input.txt", fout);
 
-  c = '(';
-  if(lexical.IsSeparator(c))
-  {
-    cout << "Yes1\n";
-  }
-  else
-  {
-    cout << "No1\n";
-  }
-
-  c = '@';
-  if(lexical.IsOperator(c))
-  {
-    cout << "Yes2\n";
-  }
-  else
-  {
-    cout << "No2\n";
-  }
-
-  s = "hello";
-  if(lexical.IsKeyword(s))
-  {
-    cout << "Yes3\n";
-  }
-  else
-  {
-    cout << "No3\n";
-  }
-
+  fout.close();
   return 0;
 }

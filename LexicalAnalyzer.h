@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ctype.h>
 #include <string>
+#include <fstream>
 using namespace std;
 
 /*******************************************************************************
@@ -38,6 +39,8 @@ class LexicalAnalyzer
     bool IsSeparator(char &c);
     bool IsOperator(char &c);
     bool IsKeyword(string &s);
+    int  ConvertCharToCol(char &c);
+    void LexAnalyzer(string fileName, ofstream &fout);
 
   private:
 };
