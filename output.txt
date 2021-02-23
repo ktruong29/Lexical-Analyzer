@@ -1,5 +1,15 @@
 TOKENS				LEXEMES
 
+KEYWORD		=		while
+SEPARATOR	=		(
+IDENTIFIER	=		fahr
+OPERATOR	=		<
+IDENTIFIER	=		upper
+SEPARATOR	=		)
+IDENTIFIER	=		a
+OPERATOR	=		=
+REAL			=		23.00
+KEYWORD		=		whileend
 KEYWORD		=		int
 IDENTIFIER	=		num1
 SEPARATOR	=		,
@@ -19,6 +29,7 @@ OPERATOR	=		=
 IDENTIFIER	=		num1
 SEPARATOR	=		;
 SEPARATOR	=		}
+KEYWORD		=		else
 SEPARATOR	=		{
 IDENTIFIER	=		large_num
 OPERATOR	=		=

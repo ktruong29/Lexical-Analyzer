@@ -73,7 +73,7 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
   // index                          0  1  2  3  4  5  6  7  8  9
   //                               l  d  O  S  !  _ sp  .  $  Other
   const int STATE_TABLE[12][10] = {{1, 4, 8, 9, 10, 3, 3, 3, 3, 3},  //0
-                                   {1, 1, 2, 2, 3, 1, 2, 3, 1, 3},   //1
+                                   {1, 1, 2, 2, 3, 1, 2, 3, 1, 2},   //1   Changed col 10 from 3 to 2 for debugging
                                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //2
                                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //3
                                    {3, 4, 5, 5, 3, 3, 5, 6, 3, 3},   //4
@@ -99,11 +99,12 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
   while(!fin.eof())
   {
     fin.get(c);
-
+    // cout << "New char: " << c << endl;
+    // cout << "New lex: " << lex << endl;
     col = ConvertCharToCol(c);
 
     state = STATE_TABLE[row][col];
-
+    // cout << "Current state: " << state << endl;
     switch(state)
     {
       case 0:
@@ -150,7 +151,7 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
           break;
 
       case 5:
-        cout << "INTEGER\t\t" << "=\t\t" << lex << endl;
+        fout << "INTEGER\t\t" << "=\t\t" << lex << endl;
         //Comparing the current character in the buffer (operators or separators?)
         if(IsSeparator(c) && c != '.')
         {
@@ -171,7 +172,7 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
 
       //Real, float numbers
       case 7:
-        cout << "REAL\t\t\t" << "=\t\t" << lex << endl;
+        fout << "REAL\t\t\t" << "=\t\t" << lex << endl;
         if(IsSeparator(c))
         {
           fout << "SEPARATOR\t" << "=\t\t" << c << endl;
@@ -191,6 +192,7 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
 
       case 9:
         fout << "SEPARATOR\t" << "=\t\t" << c << endl;
+        state = 0;
           break;
 
       case 10:
