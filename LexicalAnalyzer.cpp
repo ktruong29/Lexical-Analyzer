@@ -73,7 +73,7 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
   // index                          0  1  2  3  4  5  6  7  8  9
   //                               l  d  O  S  !  _ sp  .  $  Other
   const int STATE_TABLE[12][10] = {{1, 4, 8, 9, 10, 3, 3, 3, 3, 3},  //0
-                                   {1, 1, 2, 2, 3, 1, 2, 3, 1, 2},   //1   Changed col 10 from 3 to 2 for debugging
+                                   {1, 1, 2, 2, 3, 1, 2, 3, 1, 2},   //1   
                                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //2
                                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //3
                                    {3, 4, 5, 5, 3, 3, 5, 6, 3, 3},   //4
@@ -96,120 +96,127 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
   state = 0;
 
   fin.open(fileName);
-  while(!fin.eof())
+  if(fin.is_open())
   {
-    fin.get(c);
-    // cout << "New char: " << c << endl;
-    // cout << "New lex: " << lex << endl;
-    col = ConvertCharToCol(c);
-
-    state = STATE_TABLE[row][col];
-    // cout << "Current state: " << state << endl;
-    switch(state)
+    while(!fin.eof())
     {
-      case 0:
-          break;
-      //Appending a char into the string buffer
+      fin.get(c);
+      // cout << "New char: " << c << endl;
+      // cout << "New lex: " << lex << endl;
+      col = ConvertCharToCol(c);
 
-      case 1:
-        lex += c; // lex = lex + c   lex = int
-          break;
+      state = STATE_TABLE[row][col];
+      // cout << "Current state: " << state << endl;
+      switch(state)
+      {
+        case 0:
+            break;
+        //Appending a char into the string buffer
 
-      case 2:
-        //Comparing keywords vs. identifiers
-        if(IsKeyword(lex))
-        {
-          fout << "KEYWORD\t\t" << "=\t\t" << lex << endl;
-        }
-        else
-        {
-          fout << "IDENTIFIER\t" << "=\t\t" << lex << endl;
-        }
-        //Comparing the current character in the buffer (operator or separator?)
-        if(IsSeparator(c))
-        {
-          fout << "SEPARATOR\t" << "=\t\t" << c << endl;
-        }
-        else if(IsOperator(c))
-        {
-          fout << "OPERATOR\t" << "=\t\t" << c << endl;
-        }
-        //Clear the string buffer for the next input
-        lex = "";
-        state = 0;
-          break;
+        case 1:
+          lex += c; // lex = lex + c   lex = int
+            break;
 
-      case 3: //Example: num%, num^
-        // cout << "Unknow lexeme: " << lex << c << endl;
-        lex = "";
-        state = 0;
-          break;
+        case 2:
+          //Comparing keywords vs. identifiers
+          if(IsKeyword(lex))
+          {
+            fout << "KEYWORD\t\t\t" << "=\t\t" << lex << endl;
+          }
+          else
+          {
+            fout << "IDENTIFIER\t" << "=\t\t" << lex << endl;
+          }
+          //Comparing the current character in the buffer (operator or separator?)
+          if(IsSeparator(c))
+          {
+            fout << "SEPARATOR\t\t" << "=\t\t" << c << endl;
+          }
+          else if(IsOperator(c))
+          {
+            fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+          }
+          //Clear the string buffer for the next input
+          lex = "";
+          state = 0;
+            break;
 
-      //Appending digit into the string buffer
-      case 4:
-        lex += c;
-          break;
+        case 3: //Example: num%, num^
+          // cout << "Unknow lexeme: " << lex << c << endl;
+          lex = "";
+          state = 0;
+            break;
 
-      case 5:
-        fout << "INTEGER\t\t" << "=\t\t" << lex << endl;
-        //Comparing the current character in the buffer (operators or separators?)
-        if(IsSeparator(c) && c != '.')
-        {
-          fout << "SEPARATOR\t" << "=\t\t" << c << endl;
-        }
-        else if(IsOperator(c))
-        {
-          fout << "OPERATOR\t" << "=\t\t" << c << endl;
-        }
-        lex = "";
-        state = 0;
-          break;
+        //Appending digit into the string buffer
+        case 4:
+          lex += c;
+            break;
 
-      //For real and float numbers
-      case 6:
-        lex += c;
-          break;
+        case 5:
+          fout << "INTEGER\t\t" << "=\t\t" << lex << endl;
+          //Comparing the current character in the buffer (operators or separators?)
+          if(IsSeparator(c) && c != '.')
+          {
+            fout << "SEPARATOR\t\t" << "=\t\t" << c << endl;
+          }
+          else if(IsOperator(c))
+          {
+            fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+          }
+          lex = "";
+          state = 0;
+            break;
 
-      //Real, float numbers
-      case 7:
-        fout << "REAL\t\t\t" << "=\t\t" << lex << endl;
-        if(IsSeparator(c))
-        {
-          fout << "SEPARATOR\t" << "=\t\t" << c << endl;
-        }
-        else if(IsOperator(c))
-        {
-          fout << "OPERATOR\t" << "=\t\t" << c << endl;
-        }
-        lex = "";
-        state = 0;
-          break;
+        //For real and float numbers
+        case 6:
+          lex += c;
+            break;
 
-      case 8:
-        fout << "OPERATOR\t" << "=\t\t" << c << endl;
-        state = 0;
-          break;
+        //Real, float numbers
+        case 7:
+          fout << "REAL\t\t\t" << "=\t\t" << lex << endl;
+          if(IsSeparator(c))
+          {
+            fout << "SEPARATOR\t\t" << "=\t\t" << c << endl;
+          }
+          else if(IsOperator(c))
+          {
+            fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+          }
+          lex = "";
+          state = 0;
+            break;
 
-      case 9:
-        fout << "SEPARATOR\t" << "=\t\t" << c << endl;
-        state = 0;
-          break;
+        case 8:
+          fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+          state = 0;
+            break;
 
-      case 10:
-          break;
+        case 9:
+          fout << "SEPARATOR\t\t" << "=\t\t" << c << endl;
+          state = 0;
+            break;
 
-      case 11:
-        state = 0;
-          break;
+        case 10:
+            break;
 
-     default:
-        state = 0;
-          break;
-    }//END switch(state)
+        case 11:
+          state = 0;
+            break;
 
-    row = state;
-  }//END while(!fin.eof())
-  fin.close();
+       default:
+          state = 0;
+            break;
+      }//END switch(state)
+
+      row = state;
+    }//END while(!fin.eof())
+    fin.close();
+  }//END if(fin.is_open())
+  else
+  {
+    cout << "Can't open " << fileName << endl;
+  }
 }
 
 
