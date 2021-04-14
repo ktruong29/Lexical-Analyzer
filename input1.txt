@@ -1,2 +1,2 @@
 !First test case!
-while (fahr < upper) a = 23.00 whileend
+while (fahr < upper) a = 23.00 whileend;
