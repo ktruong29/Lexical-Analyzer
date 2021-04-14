@@ -72,18 +72,22 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
 {
   // index                          0  1  2  3  4  5  6  7  8  9
   //                               l  d  O  S  !  _ sp  .  $  Other
-  const int STATE_TABLE[12][10] = {{1, 4, 8, 9, 10, 3, 3, 3, 3, 3},  //0
-                                   {1, 1, 2, 2, 3, 1, 2, 3, 1, 2},   //1   
+  const int STATE_TABLE[16][10] = {{1, 4, 8, 9, 10, 3, 3, 3, 3, 3},  //0
+                                   {1, 1, 8, 2, 3, 1, 2, 3, 1, 2},   //1
                                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //2
                                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //3
                                    {3, 4, 5, 5, 3, 3, 5, 6, 3, 3},   //4
-                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //5
+                                   {0, 0, 8, 0, 0, 0, 0, 0, 0, 0},   //5
                                    {3, 6, 7, 7, 3, 3, 7, 3, 3, 3},   //6
-                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //7
-                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //8
+                                   {0, 0, 8, 0, 0, 0, 0, 0, 0, 0},   //7
+                                   {1, 4, 12, 3, 3, 3, 13, 3, 3, 3},   //8
                                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //9
                                    {10, 10, 10, 10, 11, 10, 10, 10, 10, 10},  //10
-                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}    //11
+                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},    //11
+                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},    //12
+                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},     //13
+                                   {1, 4, 12, 3, 3, 3, 13, 3, 3, 3},  //14
+                                   {1, 4, 12, 3, 3, 3, 13, 3, 3, 3}   //15
                                   };
   ifstream fin;
   char c;
@@ -132,10 +136,12 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
           {
             fout << "SEPARATOR\t\t" << "=\t\t" << c << endl;
           }
-          else if(IsOperator(c))
-          {
-            fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
-          }
+          // else if(IsOperator(c))
+          // {
+          //   state = 8;
+          //   lex += c;
+          //   // fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+          // }
           //Clear the string buffer for the next input
           lex = "";
           state = 0;
@@ -154,17 +160,23 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
 
         case 5:
           fout << "INTEGER\t\t" << "=\t\t" << lex << endl;
+          lex = "";
+          state = 0;
           //Comparing the current character in the buffer (operators or separators?)
           if(IsSeparator(c) && c != '.')
           {
             fout << "SEPARATOR\t\t" << "=\t\t" << c << endl;
+            lex = "";
+            state = 0;
           }
           else if(IsOperator(c))
           {
-            fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+            lex += c;
+            state = 8;
+            // fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
           }
-          lex = "";
-          state = 0;
+          // lex = "";
+          // state = 0;
             break;
 
         //For real and float numbers
@@ -175,21 +187,44 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
         //Real, float numbers
         case 7:
           fout << "REAL\t\t\t" << "=\t\t" << lex << endl;
+          lex = "";
+          state = 0;
           if(IsSeparator(c))
           {
             fout << "SEPARATOR\t\t" << "=\t\t" << c << endl;
+            lex = "";
+            state = 0;
           }
           else if(IsOperator(c))
           {
-            fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+            lex += c;
+            state = 8;
+            // fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
           }
-          lex = "";
-          state = 0;
+          // lex = "";
+          // state = 0;
             break;
-
+        //For keyword || identifier
         case 8:
-          fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
-          state = 0;
+          //Compound operator
+          if(!lex.empty())
+          {
+            if(IsKeyword(lex))
+            {
+              fout << "KEYWORD\t\t\t" << "=\t\t" << lex << endl;
+            }
+            else
+            {
+              fout << "IDENTIFIER\t" << "=\t\t" << lex << endl;
+            }
+            lex = "";
+          }
+          if(IsOperator(c))
+          {
+            lex += c;
+          }
+          // fout << "OPERATOR\t\t" << "=\t\t" << c << endl;
+          // state = 0;
             break;
 
         case 9:
@@ -203,6 +238,43 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
         case 11:
           state = 0;
             break;
+
+        case 12:
+          lex += c;
+          fout << "COMPOUND OPERATOR\t\t" << "=\t\t" << lex << endl;
+          lex = "";
+          state = 0;
+            break;
+
+        case 13:
+          fout << "OPERATOR\t\t" << "=\t\t" << lex << endl;
+          lex = "";
+          state = 0;
+            break;
+
+        case 14:
+        if(!lex.empty())
+        {
+          fout << "INTEGER\t\t" << "=\t\t" << lex << endl;
+          lex = "";
+        }
+        if(IsOperator(c))
+        {
+          lex += c;
+        }
+          break;
+
+        case 15:
+        if(!lex.empty())
+        {
+          fout << "REAL\t\t" << "=\t\t" << lex << endl;
+          lex = "";
+        }
+        if(IsOperator(c))
+        {
+          lex += c;
+        }
+          break;
 
        default:
           state = 0;
